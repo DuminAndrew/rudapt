@@ -40,5 +40,13 @@ services:
     command: arq app.workers.arq_app.WorkerSettings
     volumes: [./backend:/app]
 
+  pdf:
+    build: ./pdf-service
+    environment:
+      PORT: "9000"
+      PDF_SERVICE_TOKEN: ${PDF_SERVICE_TOKEN:-}
+    ports: ["9000:9000"]
+    init: true
+
 volumes:
   pgdata:

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -71,6 +71,42 @@ async def list_reports(
         )
     ).all()
     return ReportListOut(items=[ReportOut.model_validate(r) for r in rows], total=total)
+
+
+@router.get("/reports/{report_id}/pdf")
+async def export_report_pdf(
+    report_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> Response:
+    from app.services.pdf import build_print_html, render_pdf
+
+    report = await db.get(Report, report_id)
+    if report is None or report.user_id != user.id:
+        raise HTTPException(404, "report not found")
+    if report.status != "done" or not report.content_md:
+        raise HTTPException(400, "report is not ready")
+    startup = await db.get(Startup, report.startup_id)
+    region_label = (
+        " · ".join(report.regions)
+        if report.regions and len(report.regions) > 1
+        else report.region
+    )
+    html = build_print_html(
+        report.content_md, startup.name if startup else "Startup", region_label
+    )
+    try:
+        pdf = await render_pdf(html)
+    except Exception as e:
+        raise HTTPException(502, f"pdf service unavailable: {e}") from e
+
+    safe_name = (startup.name if startup else "plan").replace('"', "").replace("/", "-")
+    filename = f"rudapt-{safe_name}-{region_label[:40]}.pdf"
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/reports/{report_id}", response_model=ReportWithStartup)

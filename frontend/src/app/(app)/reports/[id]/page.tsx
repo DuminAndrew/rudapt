@@ -1,12 +1,12 @@
 "use client";
-import { use } from "react";
+import { use, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { api } from "@/lib/api";
+import { api, API_URL, tokens } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Download, ExternalLink } from "lucide-react";
+import { Loader2, Download, FileDown, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 type ReportDetail = {
@@ -52,6 +52,8 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
 
   const inProgress = data.status === "pending" || data.status === "running";
 
+  const [pdfLoading, setPdfLoading] = useState(false);
+
   function downloadMd() {
     if (!data?.content_md) return;
     const blob = new Blob([data.content_md], { type: "text/markdown;charset=utf-8" });
@@ -59,6 +61,26 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
     a.href = URL.createObjectURL(blob);
     a.download = `rudapt-${data.startup?.name || "plan"}-${data.region}.md`;
     a.click();
+  }
+
+  async function downloadPdf() {
+    if (!data) return;
+    setPdfLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/reports/${data.id}/pdf`, {
+        headers: { Authorization: `Bearer ${tokens.access}` },
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `rudapt-${data.startup?.name || "plan"}-${data.region}.pdf`;
+      a.click();
+    } catch (e: any) {
+      alert("Не удалось получить PDF: " + (e?.message || e));
+    } finally {
+      setPdfLoading(false);
+    }
   }
 
   return (
@@ -103,9 +125,14 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
             </div>
           </div>
           {data.status === "done" && (
-            <Button size="sm" variant="ghost" onClick={downloadMd}>
-              <Download className="h-4 w-4" /> .md
-            </Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="ghost" onClick={downloadMd}>
+                <Download className="h-4 w-4" /> .md
+              </Button>
+              <Button size="sm" onClick={downloadPdf} disabled={pdfLoading}>
+                <FileDown className="h-4 w-4" /> {pdfLoading ? "..." : "PDF"}
+              </Button>
+            </div>
           )}
         </div>
       </div>

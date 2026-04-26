@@ -1,0 +1,13 @@
+{
+  "name": "rudapt-pdf-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "puppeteer": "^23.5.0"
+  }
+}

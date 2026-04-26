@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     PRODUCTHUNT_TOKEN: str | None = None
     CRUNCHBASE_API_KEY: str | None = None
 
+    PDF_SERVICE_URL: str = "http://pdf:9000"
+    PDF_SERVICE_TOKEN: str = ""
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
