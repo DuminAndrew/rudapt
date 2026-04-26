@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { tokens } from "@/lib/api";
-import { LayoutGrid, FileText, KeyRound, Send, LogOut } from "lucide-react";
+import { LayoutGrid, FileText, KeyRound, Send, Crown, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/reports", label: "Мои планы", icon: FileText },
   { href: "/api-keys", label: "API ключи", icon: KeyRound },
   { href: "/telegram", label: "Telegram", icon: Send },
+  { href: "/billing", label: "Подписка", icon: Crown },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

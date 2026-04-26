@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import api_keys as api_keys_router
 from app.api import auth as auth_router
+from app.api import billing as billing_router
 from app.api import reports as reports_router
 from app.api import startups as startups_router
 from app.api import telegram as telegram_router
@@ -36,6 +37,7 @@ def create_app() -> FastAPI:
     app.include_router(reports_router.router)
     app.include_router(api_keys_router.router)
     app.include_router(telegram_router.router)
+    app.include_router(billing_router.router)
     app.include_router(v1_router.router)
 
     @app.get("/health", tags=["meta"])

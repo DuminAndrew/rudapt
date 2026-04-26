@@ -30,6 +30,15 @@ class Settings(BaseSettings):
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_BOT_USERNAME: str = ""
 
+    PLATEGA_API_URL: str = "https://app.platega.io/api"
+    PLATEGA_MERCHANT_ID: str = ""
+    PLATEGA_SECRET: str = ""
+    PLATEGA_RETURN_URL: str = ""
+    PLATEGA_WEBHOOK_URL: str = ""
+
+    PRO_PRICE_RUB: int = 1490         # ₽ в месяц
+    PRO_PERIOD_DAYS: int = 30
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
