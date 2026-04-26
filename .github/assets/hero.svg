@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 480" width="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="bgGlow1" cx="20%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#0B0F1F" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow2" cx="80%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#0B0F1F" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow3" cx="55%" cy="90%" r="60%">
+      <stop offset="0%" stop-color="#F43F5E" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#0B0F1F" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="textGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#F43F5E"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4"/><stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#D946EF"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E"/><stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="480" fill="#070A16"/>
+  <rect width="1280" height="480" fill="url(#bgGlow1)"/>
+  <rect width="1280" height="480" fill="url(#bgGlow2)"/>
+  <rect width="1280" height="480" fill="url(#bgGlow3)"/>
+
+  <g transform="translate(540, 140)" filter="url(#glow)">
+    <rect x="10" y="25" width="60" height="60" rx="16" transform="rotate(45 40 55)" fill="url(#cyan)" opacity="0.95"/>
+    <rect x="50" y="25" width="60" height="60" rx="16" transform="rotate(45 80 55)" fill="url(#violet)"/>
+    <rect x="90" y="25" width="60" height="60" rx="16" transform="rotate(45 120 55)" fill="url(#rose)" opacity="0.95"/>
+    <path d="M 80 30 Q 80 55 55 55 Q 80 55 80 80 Q 80 55 105 55 Q 80 55 80 30 Z" fill="#FFFFFF" opacity="0.95"/>
+  </g>
+
+  <text x="640" y="320" text-anchor="middle"
+        font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+        font-weight="900" font-size="76" fill="#E5E9F5">
+    Ru<tspan fill="url(#textGrad)">Dapt</tspan>
+  </text>
+  <text x="640" y="360" text-anchor="middle"
+        font-family="system-ui, sans-serif" font-weight="600" font-size="20"
+        fill="#9AA3BF" letter-spacing="6">
+    STARTUP LOCALIZATION AI
+  </text>
+  <text x="640" y="412" text-anchor="middle"
+        font-family="system-ui, sans-serif" font-size="18" fill="#64748B">
+    US startups · Anthropic Claude · 85 регионов РФ · production-ready бизнес-планы
+  </text>
+</svg>
