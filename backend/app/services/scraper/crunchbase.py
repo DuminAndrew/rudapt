@@ -16,6 +16,7 @@ import httpx
 
 from app.config import settings
 from app.services.scraper.base import StartupRecord
+from app.services.scraper.textutil import clean_text
 
 log = logging.getLogger(__name__)
 
@@ -77,13 +78,15 @@ async def _fetch_via_rss(limit: int) -> list[StartupRecord]:
     feed = feedparser.parse(text)
     out: list[StartupRecord] = []
     for entry in feed.entries[:limit]:
+        summary = clean_text(entry.get("summary"))
+        title = clean_text((entry.get("title") or "").split(":")[0], max_len=255) or "Crunchbase post"
         out.append(
             StartupRecord(
                 external_id=entry.get("id") or entry.get("link", ""),
                 source="crunchbase",
-                name=(entry.get("title") or "").split(":")[0].strip()[:255] or "Crunchbase post",
-                tagline=(entry.get("summary") or "")[:500] or None,
-                description=entry.get("summary"),
+                name=title,
+                tagline=clean_text(summary, max_len=500),
+                description=clean_text(summary, max_len=4000),
                 url=entry.get("link"),
                 launched_at=_parse_struct(entry.get("published_parsed")),
                 raw=dict(entry),

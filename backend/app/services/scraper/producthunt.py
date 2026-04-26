@@ -11,6 +11,7 @@ import httpx
 
 from app.config import settings
 from app.services.scraper.base import StartupRecord
+from app.services.scraper.textutil import clean_text
 
 PH_API = "https://api.producthunt.com/v2/api/graphql"
 PH_RSS = "https://www.producthunt.com/feed"
@@ -83,13 +84,14 @@ async def fetch_via_rss(limit: int = 30) -> list[StartupRecord]:
     feed = feedparser.parse(text)
     out: list[StartupRecord] = []
     for entry in feed.entries[:limit]:
+        summary = clean_text(entry.get("summary"))
         out.append(
             StartupRecord(
                 external_id=entry.get("id") or entry.get("link"),
                 source="producthunt",
-                name=entry.get("title", "").split(" - ")[0].strip(),
-                tagline=entry.get("summary", "")[:500] if entry.get("summary") else None,
-                description=entry.get("summary"),
+                name=clean_text(entry.get("title", "").split(" - ")[0]) or "—",
+                tagline=clean_text(summary, max_len=500),
+                description=clean_text(summary, max_len=4000),
                 url=entry.get("link"),
                 launched_at=_parse_struct(entry.get("published_parsed")),
                 raw=dict(entry),
