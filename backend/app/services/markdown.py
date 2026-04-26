@@ -6,6 +6,27 @@ def _list(items: list, fmt) -> str:
     return "\n".join(fmt(i) for i in items) if items else "_не указано_"
 
 
+def render_multi_region_md(payload: dict, startup_name: str) -> str:
+    items = payload.get("comparison") or []
+    if not items:
+        return render_plan_md(payload, startup_name, "—")
+    regions = [i.get("region", "—") for i in items]
+    out = [
+        f"# Сравнительный план: **{startup_name}**",
+        f"### Регионы ({len(regions)}): " + " · ".join(f"**{r}**" for r in regions),
+        "",
+        "## ⚖️ Вывод",
+        payload.get("verdict", "—"),
+        "",
+    ]
+    for item in items:
+        out.append("---")
+        out.append("")
+        out.append(render_plan_md(item.get("plan") or {}, startup_name, item.get("region", "—")))
+        out.append("")
+    return "\n".join(out)
+
+
 def render_plan_md(plan: dict, startup_name: str, region: str) -> str:
     lines: list[str] = [
         f"# Бизнес-план локализации: **{startup_name}** → {region}",

@@ -65,10 +65,14 @@ async def v1_generate(
     startup = await db.get(Startup, payload.startup_id)
     if startup is None:
         raise HTTPException(404, "startup not found")
+    regions = payload.normalized_regions()
+    if not regions:
+        raise HTTPException(400, "region or regions[] required")
     report = Report(
         user_id=user.id,
         startup_id=startup.id,
-        region=payload.region.strip(),
+        region=regions[0],
+        regions=regions if len(regions) > 1 else None,
         status="pending",
     )
     db.add(report)

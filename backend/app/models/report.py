@@ -19,6 +19,7 @@ class Report(Base):
         Uuid(as_uuid=True), ForeignKey("startups.id", ondelete="RESTRICT"), nullable=False
     )
     region: Mapped[str] = mapped_column(String(128), nullable=False)
+    regions: Mapped[list[str] | None] = mapped_column(JSON)
     status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     model: Mapped[str | None] = mapped_column(String(64))
     content: Mapped[dict | None] = mapped_column(JSON)

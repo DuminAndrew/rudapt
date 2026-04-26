@@ -61,7 +61,7 @@ SYSTEM_PROMPT = dedent(
 ).strip()
 
 
-def build_user_message(startup: Startup, region: str) -> str:
+def build_user_message(startup: Startup, regions: list[str] | str) -> str:
     info = {
         "name": startup.name,
         "tagline": startup.tagline,
@@ -70,6 +70,32 @@ def build_user_message(startup: Startup, region: str) -> str:
         "categories": startup.categories or [],
         "source": startup.source,
     }
+    if isinstance(regions, str):
+        regions = [regions]
+
+    if len(regions) == 1:
+        target = f"Целевой регион РФ: **{regions[0]}**."
+        instr = (
+            "Сгенерируй бизнес-план локализации этого продукта в указанном регионе. "
+            "Ответ — строго JSON по заданной схеме (одиночный объект, не массив)."
+        )
+    else:
+        joined = ", ".join(f"**{r}**" for r in regions)
+        target = f"Сравниваемые регионы РФ ({len(regions)}): {joined}."
+        instr = (
+            "Сгенерируй сравнительный бизнес-план локализации продукта по указанным регионам. "
+            "Для каждого региона учти СВОЮ специфику (экономика, конкуренты, каналы, регуляторика). "
+            "Ответ — строго JSON со СПЕЦИАЛЬНОЙ multi-region структурой:\n"
+            "{\n"
+            '  "comparison": [\n'
+            '    {"region": "<region_name>", "plan": { ... плановая JSON-схема как для одного региона ... }},\n'
+            "    ...\n"
+            "  ],\n"
+            '  "verdict": "Краткий сравнительный вывод: где запускать первым и почему."\n'
+            "}\n"
+            "Внутри каждого `plan` используй ту же схему: summary, value_prop_ru, mvp, "
+            "competitors_ru, channels, unit_economics, regulatory, risks, roadmap_90d."
+        )
     return dedent(
         f"""
         Стартап (исходные данные из {startup.source}):
@@ -77,9 +103,8 @@ def build_user_message(startup: Startup, region: str) -> str:
         {json.dumps(info, ensure_ascii=False, indent=2)}
         ```
 
-        Целевой регион РФ: **{region}**.
+        {target}
 
-        Сгенерируй бизнес-план локализации этого продукта в указанном регионе.
-        Ответ — строго JSON по заданной схеме.
+        {instr}
         """
     ).strip()

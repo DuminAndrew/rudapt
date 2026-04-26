@@ -12,6 +12,7 @@ import Link from "next/link";
 type ReportDetail = {
   id: string;
   region: string;
+  regions?: string[] | null;
   status: "pending" | "running" | "done" | "failed";
   model: string | null;
   content: any;
@@ -77,7 +78,11 @@ export default function ReportPage({ params }: { params: Promise<{ id: string }>
           <div className="flex-1 min-w-0">
             <h1 className="font-display text-3xl font-black">
               {data.startup?.name || "—"} <span className="text-ink-muted text-xl">→</span>{" "}
-              <span className="text-gradient">{data.region}</span>
+              <span className="text-gradient">
+                {data.regions && data.regions.length > 1
+                  ? data.regions.join(" · ")
+                  : data.region}
+              </span>
             </h1>
             <p className="text-sm text-ink-muted mt-1">{data.startup?.tagline}</p>
             <div className="mt-3 flex flex-wrap items-center gap-2">

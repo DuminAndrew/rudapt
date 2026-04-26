@@ -9,6 +9,7 @@ type Report = {
   id: string;
   startup_id: string;
   region: string;
+  regions?: string[] | null;
   status: "pending" | "running" | "done" | "failed";
   created_at: string;
 };
@@ -60,7 +61,11 @@ export default function ReportsPage() {
                       <Icon className={`h-3 w-3 mr-1 ${r.status === "running" ? "animate-spin" : ""}`} />
                       {s.label}
                     </Badge>
-                    <span className="font-display text-lg font-bold">{r.region}</span>
+                    <span className="font-display text-lg font-bold">
+                      {r.regions && r.regions.length > 1
+                        ? `${r.regions.slice(0, 2).join(" · ")}${r.regions.length > 2 ? ` +${r.regions.length - 2}` : ""}`
+                        : r.region}
+                    </span>
                   </div>
                   <div className="text-xs text-ink-dim mt-1">
                     {new Date(r.created_at).toLocaleString("ru-RU")}

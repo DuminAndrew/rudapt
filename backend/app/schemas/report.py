@@ -9,7 +9,22 @@ from app.schemas.startup import StartupOut
 
 class GeneratePlanIn(BaseModel):
     startup_id: UUID
-    region: str = Field(min_length=2, max_length=128)
+    region: str | None = Field(default=None, max_length=128)
+    regions: list[str] | None = Field(default=None, max_length=5)
+
+    def normalized_regions(self) -> list[str]:
+        out: list[str] = []
+        if self.regions:
+            out.extend(r.strip() for r in self.regions if r and r.strip())
+        if self.region and self.region.strip() and self.region.strip() not in out:
+            out.append(self.region.strip())
+        seen: set[str] = set()
+        result: list[str] = []
+        for r in out:
+            if r not in seen:
+                seen.add(r)
+                result.append(r)
+        return result
 
 
 class ReportOut(BaseModel):
@@ -17,6 +32,7 @@ class ReportOut(BaseModel):
     id: UUID
     startup_id: UUID
     region: str
+    regions: list[str] | None = None
     status: str
     model: str | None = None
     content: dict[str, Any] | None = None

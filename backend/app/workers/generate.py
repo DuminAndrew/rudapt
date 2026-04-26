@@ -8,7 +8,7 @@ from uuid import UUID
 from app.db import SessionLocal
 from app.models import Report, Startup
 from app.services.llm import generate_business_plan
-from app.services.markdown import render_plan_md
+from app.services.markdown import render_multi_region_md, render_plan_md
 from app.services.prompt import build_user_message
 
 log = logging.getLogger(__name__)
@@ -31,13 +31,19 @@ async def generate_report(ctx, report_id: str) -> dict:
         await db.commit()
 
         try:
-            user_msg = build_user_message(startup, report.region)
+            regions = list(report.regions or [])
+            if not regions:
+                regions = [report.region]
+            user_msg = build_user_message(startup, regions)
             result = await generate_business_plan(user_msg)
 
             report.status = "done"
             report.model = result.model
             report.content = result.content
-            report.content_md = render_plan_md(result.content, startup.name, report.region)
+            if len(regions) > 1:
+                report.content_md = render_multi_region_md(result.content, startup.name)
+            else:
+                report.content_md = render_plan_md(result.content, startup.name, regions[0])
             report.prompt_tokens = result.prompt_tokens
             report.completion_tokens = result.completion_tokens
             report.finished_at = datetime.now(timezone.utc)
