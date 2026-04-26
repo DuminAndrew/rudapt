@@ -35,3 +35,7 @@ Thumbs.db
 
 # docker
 pgdata/
+
+# local sqlite (dev mode)
+*.db
+*.db-journal
