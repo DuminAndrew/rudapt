@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Startup
-from app.services.scraper import producthunt, yc
+from app.services.scraper import crunchbase, producthunt, yc
 from app.services.scraper.base import StartupRecord
 
 log = logging.getLogger(__name__)
@@ -42,7 +42,11 @@ async def upsert_records(db: AsyncSession, records: list[StartupRecord]) -> int:
 
 async def ingest_all(db: AsyncSession, limit: int = 30) -> dict:
     out: dict = {}
-    for name, fn in (("producthunt", producthunt.fetch_recent), ("yc", yc.fetch_recent)):
+    for name, fn in (
+        ("producthunt", producthunt.fetch_recent),
+        ("yc", yc.fetch_recent),
+        ("crunchbase", crunchbase.fetch_recent),
+    ):
         try:
             records = await fn(limit=limit)
             out[name] = await upsert_records(db, records)

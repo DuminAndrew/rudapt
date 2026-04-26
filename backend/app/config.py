@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     LLM_MODEL_OPENAI: str = "gpt-4o"
 
     PRODUCTHUNT_TOKEN: str | None = None
+    CRUNCHBASE_API_KEY: str | None = None
 
     @property
     def cors_origins_list(self) -> list[str]:

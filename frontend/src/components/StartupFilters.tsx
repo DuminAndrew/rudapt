@@ -9,6 +9,7 @@ const SOURCES = [
   { id: "", label: "Все" },
   { id: "producthunt", label: "Product Hunt" },
   { id: "yc", label: "Y Combinator" },
+  { id: "crunchbase", label: "Crunchbase" },
 ];
 
 export function StartupFilters({
