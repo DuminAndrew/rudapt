@@ -7,6 +7,7 @@ from app.api import api_keys as api_keys_router
 from app.api import auth as auth_router
 from app.api import reports as reports_router
 from app.api import startups as startups_router
+from app.api import telegram as telegram_router
 from app.api import v1 as v1_router
 from app.config import settings
 
@@ -34,6 +35,7 @@ def create_app() -> FastAPI:
     app.include_router(startups_router.router)
     app.include_router(reports_router.router)
     app.include_router(api_keys_router.router)
+    app.include_router(telegram_router.router)
     app.include_router(v1_router.router)
 
     @app.get("/health", tags=["meta"])

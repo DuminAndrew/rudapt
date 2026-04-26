@@ -41,7 +41,16 @@ export async function api<T = unknown>(
   };
 
   let res = await doFetch();
-  if (res.status === 401 && auth && (await refreshAccess())) res = await doFetch();
+  if (res.status === 401 && auth) {
+    const ok = await refreshAccess();
+    if (ok) res = await doFetch();
+    if (res.status === 401) {
+      tokens.clear();
+      if (typeof window !== "undefined" && !location.pathname.startsWith("/login")) {
+        location.href = "/login";
+      }
+    }
+  }
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`API ${res.status}: ${text || res.statusText}`);

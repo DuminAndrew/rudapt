@@ -5,13 +5,14 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { tokens } from "@/lib/api";
-import { LayoutGrid, FileText, KeyRound, LogOut } from "lucide-react";
+import { LayoutGrid, FileText, KeyRound, Send, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/feed", label: "Лента стартапов", icon: LayoutGrid },
   { href: "/reports", label: "Мои планы", icon: FileText },
   { href: "/api-keys", label: "API ключи", icon: KeyRound },
+  { href: "/telegram", label: "Telegram", icon: Send },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

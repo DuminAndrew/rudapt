@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     PDF_SERVICE_URL: str = "http://pdf:9000"
     PDF_SERVICE_TOKEN: str = ""
 
+    TELEGRAM_BOT_TOKEN: str = ""
+    TELEGRAM_BOT_USERNAME: str = ""
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
