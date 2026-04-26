@@ -32,8 +32,10 @@ async def list_startups(
         stmt = stmt.where(Startup.source == source)
         count_stmt = count_stmt.where(Startup.source == source)
     if category:
-        stmt = stmt.where(Startup.categories.any(category))
-        count_stmt = count_stmt.where(Startup.categories.any(category))
+        from sqlalchemy import String as SAString
+        like = f'%"{category}"%'
+        stmt = stmt.where(func.cast(Startup.categories, SAString).like(like))
+        count_stmt = count_stmt.where(func.cast(Startup.categories, SAString).like(like))
 
     total = await db.scalar(count_stmt) or 0
     rows = (

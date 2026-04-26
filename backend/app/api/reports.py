@@ -1,12 +1,9 @@
 from uuid import UUID
 
-from arq import create_pool
-from arq.connections import RedisSettings
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import settings
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import Report, Startup, User
@@ -16,12 +13,10 @@ from app.schemas.report import (
     ReportOut,
     ReportWithStartup,
 )
+from app.services.queue import enqueue_or_run
+from app.workers.generate import generate_report
 
 router = APIRouter(prefix="/api", tags=["reports"])
-
-
-def _redis_settings() -> RedisSettings:
-    return RedisSettings.from_dsn(settings.REDIS_URL)
 
 
 @router.post("/generate-plan", response_model=ReportOut, status_code=status.HTTP_202_ACCEPTED)
@@ -44,12 +39,10 @@ async def generate_plan(
     await db.commit()
     await db.refresh(report)
 
-    pool = await create_pool(_redis_settings())
-    try:
-        await pool.enqueue_job("generate_report", str(report.id))
-    finally:
-        await pool.close()
+    async def _inproc(rid: str):
+        await generate_report({}, rid)
 
+    await enqueue_or_run("generate_report", str(report.id), fallback_fn=_inproc)
     return ReportOut.model_validate(report)
 
 

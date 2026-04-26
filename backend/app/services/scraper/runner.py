@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Startup
@@ -12,29 +12,32 @@ from app.services.scraper.base import StartupRecord
 
 log = logging.getLogger(__name__)
 
+_FIELDS = (
+    "name", "tagline", "description", "url", "logo_url",
+    "categories", "votes", "launched_at", "raw",
+)
+
 
 async def upsert_records(db: AsyncSession, records: list[StartupRecord]) -> int:
     if not records:
         return 0
-    rows = [r.__dict__ for r in records]
-    stmt = insert(Startup).values(rows)
-    stmt = stmt.on_conflict_do_update(
-        index_elements=["source", "external_id"],
-        set_={
-            "name": stmt.excluded.name,
-            "tagline": stmt.excluded.tagline,
-            "description": stmt.excluded.description,
-            "url": stmt.excluded.url,
-            "logo_url": stmt.excluded.logo_url,
-            "categories": stmt.excluded.categories,
-            "votes": stmt.excluded.votes,
-            "launched_at": stmt.excluded.launched_at,
-            "raw": stmt.excluded.raw,
-        },
-    )
-    await db.execute(stmt)
+    n = 0
+    for r in records:
+        existing = (
+            await db.scalars(
+                select(Startup).where(
+                    Startup.source == r.source, Startup.external_id == r.external_id
+                )
+            )
+        ).first()
+        if existing:
+            for f in _FIELDS:
+                setattr(existing, f, getattr(r, f))
+        else:
+            db.add(Startup(**r.__dict__))
+        n += 1
     await db.commit()
-    return len(records)
+    return n
 
 
 async def ingest_all(db: AsyncSession, limit: int = 30) -> dict:
