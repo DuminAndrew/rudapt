@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" width="100%" height="100%">
+  <defs>
+    <!-- Градиент 1: США / Исходный код (Кибер-голубой) -->
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+
+    <!-- Градиент 2: AI / Адаптация (Ультра-фиолетовый) -->
+    <linearGradient id="neonPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#D946EF" />
+    </linearGradient>
+
+    <!-- Градиент 3: Россия / Запуск продукта (Сочный розово-оранжевый) -->
+    <linearGradient id="neonPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#F97316" />
+    </linearGradient>
+
+    <!-- Градиент для текста Dapt -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#F43F5E" />
+    </linearGradient>
+
+    <!-- Эффект неонового свечения (цветная тень) -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#8B5CF6" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- ИКОНКА (Светящаяся призма из ромбов) -->
+  <g transform="translate(15, 25)" filter="url(#neonGlow)">
+    
+    <!-- Левый блок -->
+    <rect x="10" y="25" width="50" height="50" rx="14" transform="rotate(45 35 50)" fill="url(#neonCyan)" opacity="0.9" />
+
+    <!-- Центральный блок (Слой выше) -->
+    <rect x="40" y="25" width="50" height="50" rx="14" transform="rotate(45 65 50)" fill="url(#neonPurple)" opacity="0.95" />
+
+    <!-- Правый блок (Самый верхний слой) -->
+    <rect x="70" y="25" width="50" height="50" rx="14" transform="rotate(45 95 50)" fill="url(#neonPink)" opacity="0.9" />
+
+    <!-- Белая искра нейросети в самом центре (AI Spark) -->
+    <path d="M 65 32 Q 65 50 47 50 Q 65 50 65 68 Q 65 50 83 50 Q 65 50 65 32 Z" fill="#FFFFFF" opacity="0.95" />
+    
+  </g>
+
+  <!-- ТЕКСТ ЛОГОТИПА -->
+  <g transform="translate(170, 95)">
+    <!-- Главное название -->
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="64" fill="#0B132B">
+      Ru<tspan fill="url(#textGrad)">Dapt</tspan>
+    </text>
+    
+    <!-- Подзаголовок (Строгий и технологичный) -->
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="13" fill="#64748B" y="28" letter-spacing="4">
+      STARTUP LOCALIZATION AI
+    </text>
+  </g>
+</svg>
