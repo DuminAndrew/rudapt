@@ -1,5 +1,5 @@
 "use client";
-import { use, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -30,8 +30,8 @@ type ReportDetail = {
   } | null;
 };
 
-export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function ReportPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { data, error } = useQuery({
     queryKey: ["report", id],
     queryFn: () => api<ReportDetail>(`/api/reports/${id}`),
